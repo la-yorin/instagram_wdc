@@ -2,7 +2,7 @@
 
   const config = {
       clientId: '5c6afb52f12a437baaa88cc4b2ab3843',
-      redirectUri: 'file:///Users/yorinosinga/projects/tableau_connectors/instagram_wdc/sim/webdataconnector/instagram_wdc/index.html',
+      redirectUri: 'https://la-yorin.github.io/instagram_wdc',
       authUrl: 'https://api.instagram.com',
       max_iteration: 20,
   };
@@ -22,6 +22,8 @@
             const value = (queryString.split('='))[1];
             accessToken = decodeURIComponent(value);
         }
+
+        console.log(accessToken)
 
         const hasAuth = accessToken && accessToken.length > 0;
         updateUIWithAuthState(hasAuth);
@@ -59,11 +61,11 @@
 
     function updateUIWithAuthState(hasAuth) {
       if (hasAuth) {
-          $(".notsignedin").css('display', 'none');
-          $(".signedin").css('display', 'block');
+          $("#login").css('display', 'none');
+          $("#get-data").css('display', 'block');
       } else {
-          $(".notsignedin").css('display', 'block');
-          $(".signedin").css('display', 'none');
+          $("#login").css('display', 'block');
+          $("#get-data").css('display', 'none');
       }
   }
 
@@ -115,7 +117,7 @@
             const value = (queryString.split('='))[1];
             accessToken = decodeURIComponent(value);
         }
-
+        console.log(accessToken)
         const hasAuth = accessToken && accessToken.length > 0;
         updateUIWithAuthState(hasAuth);
 
