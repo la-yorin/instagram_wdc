@@ -1,58 +1,58 @@
 (function () {
+    'use strict';
 
-  var config = {
+    var config = {
       clientId: '7cba9e9293584569bbce7a4fe57345df',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc',
-      authUrl: 'https://api.instagram.com',
-      max_iteration: 20,
-  };
+      authUrl: 'https://api.instagram.com'
+    };
 
     var myConnector = tableau.makeConnector();
 
-    myConnector.init = function(initCallback) {
-        tableau.authType = tableau.authTypeEnum.custom;
+    // myConnector.init = function(initCallback) {
+        // tableau.authType = tableau.authTypeEnum.custom;
 
 
         // if (tableau.phase == tableau.phaseEnum.authPhase) {
         //     $("#getvenuesbutton").css('display', 'none');
         // }
 
-        var accessToken = ''
-        if((window.location.href).indexOf('#') != -1) {
-            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            var value = (queryString.split('='))[1];
-            accessToken = decodeURIComponent(value);
-        }
+        // var accessToken = ''
+        // if((window.location.href).indexOf('#') != -1) {
+        //     var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
+        //     var value = (queryString.split('='))[1];
+        //     accessToken = decodeURIComponent(value);
+        // }
 
-        // console.log(accessToken)
+        // // console.log(accessToken)
 
-        var hasAuth = accessToken && accessToken.length > 0;
-        updateUIWithAuthState(hasAuth);
+        // var hasAuth = accessToken && accessToken.length > 0;
+        // updateUIWithAuthState(hasAuth);
 
-        if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
+        // if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
         // If the API that WDC is using has an endpoint that checks
         // the validity of an access token, that could be used here.
         // Then the WDC can call tableau.abortForAuth if that access token
         // is invalid.
          // tableau.abortForAuth
         // call secured endpoint and check response.
-      }
+       // }
 
-        initCallback();
+        // initCallback();
 
-        if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
-          if (hasAuth) {
-              tableau.password = accessToken;
+      //   if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
+      //     if (hasAuth) {
+      //         tableau.password = accessToken;
 
-              if (tableau.phase == tableau.phaseEnum.authPhase) {
-                // Auto-submit here if we are in the auth phase
-                tableau.submit()
-              }
+      //         if (tableau.phase == tableau.phaseEnum.authPhase) {
+      //           // Auto-submit here if we are in the auth phase
+      //           tableau.submit()
+      //         }
 
-              return;
-          }
-      }
-    }
+      //         return;
+      //     }
+      // }
+    // }
 
     function instagramLoginRedirect() {
         var url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
@@ -107,29 +107,28 @@
         doneCallback()
     };
 
-    tableau.registerConnector(myConnector);
-
 
     $(document).ready(function () {
-        var accessToken = ''
+        // var accessToken = ''
 
-        if((window.location.href).indexOf('#') != -1) {
-            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            var value = (queryString.split('='))[1];
-            accessToken = decodeURIComponent(value);
-        }
-        // console.log(accessToken)
-        var hasAuth = accessToken && accessToken.length > 0;
-        updateUIWithAuthState(hasAuth);
+        // if((window.location.href).indexOf('#') != -1) {
+        //     var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
+        //     var value = (queryString.split('='))[1];
+        //     accessToken = decodeURIComponent(value);
+        // }
+        // // console.log(accessToken)
+        // var hasAuth = accessToken && accessToken.length > 0;
+        // updateUIWithAuthState(hasAuth);
 
         $("#login").click(function () {
             instagramLoginRedirect()
         });
 
-        $("#get-data").click(function () {
-            tableau.connectionName = "Instagram Feed";
-            tableau.submit();    
-        });
+    //     $("#get-data").click(function () {
+    //         tableau.connectionName = "Instagram Feed";
+    //         tableau.submit();    
+    //     });
     });
 
+    tableau.registerConnector(myConnector);
 })();
