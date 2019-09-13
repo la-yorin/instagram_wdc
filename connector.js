@@ -1,13 +1,13 @@
 (function () {
 
-  const config = {
+  var config = {
       clientId: '7cba9e9293584569bbce7a4fe57345df',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc',
       authUrl: 'https://api.instagram.com',
       max_iteration: 20,
   };
 
-    const myConnector = tableau.makeConnector();
+    var myConnector = tableau.makeConnector();
 
     myConnector.init = function(initCallback) {
         tableau.authType = tableau.authTypeEnum.custom;
@@ -19,14 +19,14 @@
 
         var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
-            const queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            const value = (queryString.split('='))[1];
+            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
+            var value = (queryString.split('='))[1];
             accessToken = decodeURIComponent(value);
         }
 
-        console.log(accessToken)
+        // console.log(accessToken)
 
-        const hasAuth = accessToken && accessToken.length > 0;
+        var hasAuth = accessToken && accessToken.length > 0;
         updateUIWithAuthState(hasAuth);
 
         if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
@@ -55,7 +55,7 @@
     }
 
     function instagramLoginRedirect() {
-        const url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
+        var url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
             '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
       window.location.href = url;
     }
@@ -72,7 +72,7 @@
 
 
     myConnector.getSchema = function (schemaCallback) {
-        const cols = [
+        var cols = [
              { id : "username", alias : "username", dataType : tableau.dataTypeEnum.string},
              { id : "filter", alias : "filter", dataType : tableau.dataTypeEnum.string },
              { id : "likes", alias : "Number of likes", dataType : tableau.dataTypeEnum.float },
@@ -85,7 +85,7 @@
              { id : "image_url", alias : "Image URL", dataType : tableau.dataTypeEnum.string },
         ];
 
-        const tableInfo = {
+        var tableInfo = {
             id : "instagramFeed",
             alias : "Instagram Feed",
             columns : cols
@@ -95,7 +95,7 @@
     };
 
     myConnector.getData = function (table, doneCallback) {
-        const data = [
+        var data = [
             {
                 'username': "Bart"
             }
@@ -114,12 +114,12 @@
         var accessToken = ''
 
         if((window.location.href).indexOf('#') != -1) {
-            const queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            const value = (queryString.split('='))[1];
+            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
+            var value = (queryString.split('='))[1];
             accessToken = decodeURIComponent(value);
         }
-        console.log(accessToken)
-        const hasAuth = accessToken && accessToken.length > 0;
+        // console.log(accessToken)
+        var hasAuth = accessToken && accessToken.length > 0;
         updateUIWithAuthState(hasAuth);
 
         $("#login").click(function () {
