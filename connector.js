@@ -1,7 +1,7 @@
 (function () {
 
   const config = {
-      clientId: '5c6afb52f12a437baaa88cc4b2ab3843',
+      clientId: '7cba9e9293584569bbce7a4fe57345df',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc',
       authUrl: 'https://api.instagram.com',
       max_iteration: 20,
