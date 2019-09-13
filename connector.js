@@ -111,7 +111,7 @@
 
 
     $(document).ready(function () {
-        let accessToken = ''
+        var accessToken = ''
 
         if((window.location.href).indexOf('#') != -1) {
             const queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
