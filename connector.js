@@ -16,7 +16,8 @@
         // if (tableau.phase == tableau.phaseEnum.authPhase) {
         //     $("#getvenuesbutton").css('display', 'none');
         // }
-        let accessToken = ''
+
+        var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
             const queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
             const value = (queryString.split('='))[1];
