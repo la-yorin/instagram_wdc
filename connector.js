@@ -2,8 +2,8 @@
     'use strict';
 
     var config = {
-      // clientId: '7cba9e9293584569bbce7a4fe57345df',
-      clientId: 'a9a99541b5a94530b7af76053e1b844b',
+      clientId: '7cba9e9293584569bbce7a4fe57345df',
+      // clientId: 'a9a99541b5a94530b7af76053e1b844b',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc',
       authUrl: 'https://api.instagram.com'
     };
@@ -62,13 +62,13 @@
     }
 
     function updateUIWithAuthState(hasAuth) {
-      if (hasAuth) {
-          $("#login").css('display', 'none');
-          $("#get-data").css('display', 'block');
-      } else {
-          $("#login").css('display', 'block');
-          $("#get-data").css('display', 'none');
-      }
+      // if (hasAuth) {
+      //     $("#login").css('display', 'none');
+      //     $("#get-data").css('display', 'block');
+      // } else {
+      //     $("#login").css('display', 'block');
+      //     $("#get-data").css('display', 'none');
+      // }
   }
 
 
