@@ -124,10 +124,10 @@
             instagramLoginRedirect()
         });
 
-        // $("#get-data").click(function () {
-        //     tableau.connectionName = "Instagram Feed";
-        //     tableau.submit();    
-        // });
+        $("#get-data").click(function () {
+            tableau.connectionName = "Instagram Feed";
+            tableau.submit();    
+        });
     });
 
     tableau.registerConnector(myConnector);
