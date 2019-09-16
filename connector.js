@@ -125,23 +125,23 @@
     function formatPosts(posts) {
         var formattedPosts = []
 
-        for (var post in posts) {
+        for (var i = 0; i < posts.length; i++) {
             var text = ''
-            if (post.caption ) {
-                text = post.caption.text.toString();
+            if (posts[i].caption ) {
+                text = posts[i].caption.text.toString();
             }
-            var date = new Date(parseInt(post.created_time) * 1000);
+            var date = new Date(parseInt(posts[i].created_time) * 1000);
 
             formattedPosts.push({
-                "username": post.user.username,
-                "filter": post.filter,
-                "likes": post.likes.count,
-                "tags": post.tags.toString(),
+                "username": posts[i].user.username,
+                "filter": posts[i].filter,
+                "likes": posts[i].likes.count,
+                "tags": posts[i].tags.toString(),
                 "created_time": date,
-                "link": post.link,
-                "nb_comments": post.comments.count,
+                "link": posts[i].link,
+                "nb_comments": posts[i].comments.count,
                 "text": text,
-                "image_url": post.images.low_resolution.url,
+                "image_url": posts[i].images.low_resolution.url,
             });
         }
         return formattedPosts
