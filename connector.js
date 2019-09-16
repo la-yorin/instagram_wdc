@@ -125,7 +125,7 @@
     function formatPosts(posts) {
         var formattedPosts = []
 
-        for (var post of posts) {
+        for (var post in posts) {
             var text = ''
             if (post.caption ) {
                 text = post.caption.text.toString();
