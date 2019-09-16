@@ -2,10 +2,10 @@
     'use strict';
 
     var config = {
-      // clientId: '7cba9e9293584569bbce7a4fe57345df',
-      clientId: 'a9a99541b5a94530b7af76053e1b844b',
+      clientId: '7cba9e9293584569bbce7a4fe57345df',
+      // clientId: 'a9a99541b5a94530b7af76053e1b844b',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc/',
-      authUrl: 'https://api.instagram.com'
+      baseUrl: 'https://api.instagram.com'
     };
 
 
@@ -38,7 +38,7 @@
             appId = config.clientId; // This should be the Tableau Server appID
         }
 
-        var url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
+        var url = config.baseUrl + '/oauth/authorize/?client_id=' + config.clientId +
             '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
       window.location.href = url;
     }
@@ -59,18 +59,16 @@
         tableau.authType = tableau.authTypeEnum.custom;
 
 
-        // if (tableau.phase == tableau.phaseEnum.authPhase) {
-        //     $("#getvenuesbutton").css('display', 'none');
-        // }
-
-        // if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
+        if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
         // If the API that WDC is using has an endpoint that checks
         // the validity of an access token, that could be used here.
         // Then the WDC can call tableau.abortForAuth if that access token
         // is invalid.
-         // tableau.abortForAuth
+        //  tableau.abortForAuth
         // call secured endpoint and check response.
-       // }
+
+        // .....?
+       }
 
         var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
@@ -99,20 +97,20 @@
       }
     }
 
-
-
     myConnector.getSchema = function (schemaCallback) {
         var cols = [
-             { id : "username", alias : "username", dataType : tableau.dataTypeEnum.string},
-             { id : "filter", alias : "filter", dataType : tableau.dataTypeEnum.string },
-             { id : "likes", alias : "Number of likes", dataType : tableau.dataTypeEnum.float },
-             { id : "tags", alias : "tags", dataType : tableau.dataTypeEnum.string },
-             { id : "created_time", alias : "Created Time", dataType : tableau.dataTypeEnum.datetime },
-             { id : "link", alias : "Link", dataType : tableau.dataTypeEnum.string },
-             { id : "location", alias : "location", dataType : tableau.dataTypeEnum.string },
-             { id : "nr_comments", alias : "number of Comments", dataType : tableau.dataTypeEnum.float },
-             { id : "text", alias : "Text", dataType : tableau.dataTypeEnum.string },
-             { id : "image_url", alias : "Image URL", dataType : tableau.dataTypeEnum.string },
+            { id: 'id', alias: 'id', dataType: tableau.dataTypeEnum.string},
+            { id : "username", alias : "username", dataType : tableau.dataTypeEnum.string},
+            { id : "filter", alias : "filter", dataType : tableau.dataTypeEnum.string },
+            { id : "likes", alias : "Number of likes", dataType : tableau.dataTypeEnum.float },
+            { id : "tags", alias : "tags", dataType : tableau.dataTypeEnum.string },
+            { id : "created_time", alias : "Created Time", dataType : tableau.dataTypeEnum.datetime },
+            { id : "link", alias : "Link", dataType : tableau.dataTypeEnum.string },
+            { id : "location", alias : "location", dataType : tableau.dataTypeEnum.string },
+            { id : "nr_comments", alias : "number of Comments", dataType : tableau.dataTypeEnum.float },
+            { id : "text", alias : "Text", dataType : tableau.dataTypeEnum.string },
+            { id : "image_url", alias : "Image URL", dataType : tableau.dataTypeEnum.string },
+            { id: 'type', alias: 'Type', dataType: tableau.dataTypeEnum.string }
         ];
 
         var tableInfo = {
@@ -124,17 +122,51 @@
         schemaCallback([tableInfo]);
     };
 
-    myConnector.getData = function (table, doneCallback) {
-        var data = [
-            {
-                'username': "Bart"
+    function formatPosts(posts) {
+        var formattedPosts = []
+
+        for (const post of posts) {
+            var text = ''
+            if (post.caption ) {
+                text = post.caption.text.toString();
             }
-        ]
-        table.appendRows(data)
+            var date = new Date(parseInt(post.created_time) * 1000);
 
+            formattedPosts.push({
+                "username": post.user.username,
+                "filter": post.filter,
+                "likes": post.likes.count,
+                "tags": post.tags.toString(),
+                "created_time": date,
+                "link": post.link,
+                "nb_comments": post.comments.count,
+                "text": text,
+                "image_url": post.images.low_resolution.url,
+            });
+        }
+        return formattedPosts
+    }
 
-        // tableau.abortForAuth
-        doneCallback()
+    myConnector.getData = function (table, doneCallback) {
+        var url = config.baseUrl + '/v1/users/self/media/recent' + '?access_token=' + tableau.password
+        console.log(url)
+        var request = $.get(url);
+
+        request.done(function(data) {
+            console.log(data)
+            var posts = data.data
+
+            var formattedPosts = formatPosts(posts)
+            table.appendRows(formattedPosts)
+
+            // tableau.abortForAuth
+            doneCallback()
+        });
+
+        request.fail(function(error) {
+            console.log(error)
+        })
+
     };
 
     tableau.registerConnector(myConnector);
