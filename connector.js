@@ -4,7 +4,7 @@
     var config = {
       // clientId: '7cba9e9293584569bbce7a4fe57345df',
       clientId: 'a9a99541b5a94530b7af76053e1b844b',
-      redirectUri: 'https://la-yorin.github.io/instagram_wdc',
+      redirectUri: 'https://la-yorin.github.io/instagram_wdc/',
       authUrl: 'https://api.instagram.com'
     };
 
