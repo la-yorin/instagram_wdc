@@ -2,22 +2,20 @@
     'use strict';
 
     var config = {
-      // clientId: '7cba9e9293584569bbce7a4fe57345df',
-      clientId: 'a9a99541b5a94530b7af76053e1b844b',
+      clientId: '7cba9e9293584569bbce7a4fe57345df',
+      // clientId: 'a9a99541b5a94530b7af76053e1b844b',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc',
       authUrl: 'https://api.instagram.com'
     };
 
 
-    $(document).ready(function () {
-        var accessToken = ''
+  $(document).ready(function() {
 
         if((window.location.href).indexOf('#') != -1) {
             var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
             var value = (queryString.split('='))[1];
-            accessToken = decodeURIComponent(value);
+            var accessToken = decodeURIComponent(value);
         }
-        console.log(accessToken)
         var hasAuth = accessToken && accessToken.length > 0;
         updateUIWithAuthState(hasAuth);
 
@@ -33,6 +31,13 @@
 
 
     function instagramLoginRedirect() {
+        var appId = config.clientId;
+        if (tableau.authPurpose === tableau.authPurposeEnum.ephemerel) {
+            appId = config.clientId;
+        } else if (tableau.authPurpose === tableau.authPurposeEnum.enduring) {
+            appId = config.clientId; // This should be the Tableau Server appID
+        }
+
         var url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
             '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
       window.location.href = url;
@@ -73,8 +78,6 @@
             var value = (queryString.split('='))[1];
             accessToken = decodeURIComponent(value);
         }
-
-        console.log(accessToken)
 
         var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
         updateUIWithAuthState(hasAuth);
