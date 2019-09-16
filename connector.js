@@ -2,11 +2,51 @@
     'use strict';
 
     var config = {
-      // clientId: '7cba9e9293584569bbce7a4fe57345df',
-      clientId: 'a9a99541b5a94530b7af76053e1b844b',
+      clientId: '7cba9e9293584569bbce7a4fe57345df',
+      // clientId: 'a9a99541b5a94530b7af76053e1b844b',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc',
       authUrl: 'https://api.instagram.com'
     };
+
+
+    $(document).ready(function () {
+        var accessToken = ''
+
+        if((window.location.href).indexOf('#') != -1) {
+            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
+            var value = (queryString.split('='))[1];
+            accessToken = decodeURIComponent(value);
+        }
+        console.log(accessToken)
+        var hasAuth = accessToken && accessToken.length > 0;
+        updateUIWithAuthState(hasAuth);
+
+        $("#login").click(function () {
+            instagramLoginRedirect()
+        });
+
+        $("#get-data").click(function () {
+            tableau.connectionName = "Instagram Feed";
+            tableau.submit();    
+        });
+    });
+
+
+    function instagramLoginRedirect() {
+        var url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
+            '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
+      window.location.href = url;
+    }
+
+    function updateUIWithAuthState(hasAuth) {
+      if (hasAuth) {
+          $("#login").css('display', 'none');
+          $("#get-data").css('display', 'block');
+      } else {
+          $("#login").css('display', 'block');
+          $("#get-data").css('display', 'none');
+      }
+  }
 
     var myConnector = tableau.makeConnector();
 
@@ -18,6 +58,15 @@
         //     $("#getvenuesbutton").css('display', 'none');
         // }
 
+        // if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
+        // If the API that WDC is using has an endpoint that checks
+        // the validity of an access token, that could be used here.
+        // Then the WDC can call tableau.abortForAuth if that access token
+        // is invalid.
+         // tableau.abortForAuth
+        // call secured endpoint and check response.
+       // }
+
         var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
             var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
@@ -27,17 +76,9 @@
 
         console.log(accessToken)
 
-        var hasAuth = accessToken && accessToken.length > 0;
+        var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
         updateUIWithAuthState(hasAuth);
 
-        // if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
-        // If the API that WDC is using has an endpoint that checks
-        // the validity of an access token, that could be used here.
-        // Then the WDC can call tableau.abortForAuth if that access token
-        // is invalid.
-         // tableau.abortForAuth
-        // call secured endpoint and check response.
-       // }
 
         initCallback();
 
@@ -55,21 +96,6 @@
       }
     }
 
-    function instagramLoginRedirect() {
-        var url = config.authUrl + '/oauth/authorize/?client_id=' + config.clientId +
-            '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
-      window.location.href = url;
-    }
-
-    function updateUIWithAuthState(hasAuth) {
-      // if (hasAuth) {
-      //     $("#login").css('display', 'none');
-      //     $("#get-data").css('display', 'block');
-      // } else {
-      //     $("#login").css('display', 'block');
-      //     $("#get-data").css('display', 'none');
-      // }
-  }
 
 
     myConnector.getSchema = function (schemaCallback) {
@@ -107,29 +133,6 @@
         // tableau.abortForAuth
         doneCallback()
     };
-
-
-    $(document).ready(function () {
-        var accessToken = ''
-
-        if((window.location.href).indexOf('#') != -1) {
-            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            var value = (queryString.split('='))[1];
-            accessToken = decodeURIComponent(value);
-        }
-        console.log(accessToken)
-        var hasAuth = accessToken && accessToken.length > 0;
-        updateUIWithAuthState(hasAuth);
-
-        $("#login").click(function () {
-            instagramLoginRedirect()
-        });
-
-        $("#get-data").click(function () {
-            tableau.connectionName = "Instagram Feed";
-            tableau.submit();    
-        });
-    });
 
     tableau.registerConnector(myConnector);
 })();
