@@ -155,12 +155,26 @@
         return formattedPosts
     }
 
-    function getPosts(callback) {
-        var url = config.baseUrl + '/v1/users/self/media/recent' + '?access_token=' + tableau.password;
+    function getPosts(url, callback) {
+        var posts = []
         var request = $.get(url);
 
         request.done(function(data) {
-            callback(null, data.data);
+            if (data.data) {
+                posts = posts.concat(data.data)
+            }
+
+            if (data.pagination && data.pagination.next_url) {
+                getPosts(data.pagination.next_url, function(error, data) {
+                    if (error) {
+                        return callback(error)
+                    }
+                    if (data) {
+                        posts = posts.concat(data)
+                    }
+                })
+            } 
+            callback(null, posts);
         });
 
         request.fail(function(error) {
@@ -193,14 +207,17 @@
     myConnector.getData = function (table, doneCallback) {
          // tableau.abortForAuth
         if (table.tableInfo.id === 'instagramPosts') {
-            getPosts(function(error, posts) {
+            var url = config.baseUrl + '/v1/users/self/media/recent' + '?access_token=' + tableau.password;
+            getPosts(url, function(error, posts) {
                 if (error) {
                     throw error;
                 }
+                console.log(posts);
                 var formattedPosts = formatPosts(posts);
                 table.appendRows(formattedPosts);
                 doneCallback();
             })
+
         }
         
         if (table.tableInfo.id == 'instagramAccountInfo') {
