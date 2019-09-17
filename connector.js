@@ -3,7 +3,6 @@
 
     var config = {
       clientId: '7cba9e9293584569bbce7a4fe57345df',
-      // clientId: 'a9a99541b5a94530b7af76053e1b844b',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc/',
       baseUrl: 'https://api.instagram.com'
     };
@@ -19,12 +18,13 @@
         var hasAuth = accessToken && accessToken.length > 0;
         updateUIWithAuthState(hasAuth);
 
-        $("#login").click(function () {
+        $('#login').click(function () {
+            console.log('KLIKKERDEKLIK')
             instagramLoginRedirect()
         });
 
-        $("#get-data").click(function () {
-            tableau.connectionName = "Instagram Feed";
+        $('#get-data').click(function () {
+            tableau.connectionName = 'Instagram Feed';
             tableau.submit();    
         });
     });
@@ -40,16 +40,16 @@
 
         var url = config.baseUrl + '/oauth/authorize/?client_id=' + config.clientId +
             '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
-      window.location.href = url;
+        window.location.href = url;
     }
 
     function updateUIWithAuthState(hasAuth) {
       if (hasAuth) {
-          $("#login").css('display', 'none');
-          $("#get-data").css('display', 'block');
+          $('#login').css('display', 'none');
+          $('#get-data').css('display', 'block');
       } else {
-          $("#login").css('display', 'block');
-          $("#get-data").css('display', 'none');
+          $('#login').css('display', 'block');
+          $('#get-data').css('display', 'none');
       }
   }
 
@@ -99,23 +99,22 @@
 
     myConnector.getSchema = function (schemaCallback) {
         var cols = [
-            { id: 'id', alias: 'id', dataType: tableau.dataTypeEnum.string},
-            { id : "username", alias : "username", dataType : tableau.dataTypeEnum.string},
-            { id : "filter", alias : "filter", dataType : tableau.dataTypeEnum.string },
-            { id : "likes", alias : "Number of likes", dataType : tableau.dataTypeEnum.float },
-            { id : "tags", alias : "tags", dataType : tableau.dataTypeEnum.string },
-            { id : "created_time", alias : "Created Time", dataType : tableau.dataTypeEnum.datetime },
-            { id : "link", alias : "Link", dataType : tableau.dataTypeEnum.string },
-            { id : "location", alias : "location", dataType : tableau.dataTypeEnum.string },
-            { id : "nr_comments", alias : "number of Comments", dataType : tableau.dataTypeEnum.float },
-            { id : "text", alias : "Text", dataType : tableau.dataTypeEnum.string },
-            { id : "image_url", alias : "Image URL", dataType : tableau.dataTypeEnum.string },
-            { id: 'type', alias: 'Type', dataType: tableau.dataTypeEnum.string }
+            { id: 'id', alias: 'Id', dataType: tableau.dataTypeEnum.string},
+            { id : 'type', alias: 'Type', dataType: tableau.dataTypeEnum.string },
+            { id : 'username', alias : 'Username', dataType : tableau.dataTypeEnum.string},
+            { id : 'created_time', alias : 'Created Time', dataType : tableau.dataTypeEnum.datetime },
+            { id : 'text', alias : 'Text', dataType : tableau.dataTypeEnum.string },
+            { id : 'image_count', alias : 'Image Count', dataType : tableau.dataTypeEnum.string },
+            { id : 'likes', alias : 'Number of Likes', dataType : tableau.dataTypeEnum.int },
+            { id : 'comments', alias : 'Number of Comments', dataType : tableau.dataTypeEnum.int },
+            { id : 'tags', alias : 'Tags', dataType : tableau.dataTypeEnum.string },
+            { id : 'filter', alias : 'Filter', dataType : tableau.dataTypeEnum.string },
+            { id : 'link', alias : 'Link', dataType : tableau.dataTypeEnum.string }
         ];
 
         var tableInfo = {
-            id : "instagramFeed",
-            alias : "Instagram Feed",
+            id : 'instagramFeed',
+            alias : 'Instagram Feed',
             columns : cols
         };
 
@@ -126,26 +125,24 @@
         var formattedPosts = []
 
         for (var i = 0; i < posts.length; i++) {
-            var text = ''
-            if (posts[i].caption ) {
-                text = posts[i].caption.text.toString();
-            }
-            var date = new Date(parseInt(posts[i].created_time) * 1000);
-
             formattedPosts.push({
-                "username": posts[i].user.username,
-                "filter": posts[i].filter,
-                "likes": posts[i].likes.count,
-                "tags": posts[i].tags.toString(),
-                "created_time": date,
-                "link": posts[i].link,
-                "nb_comments": posts[i].comments.count,
-                "text": text,
-                "image_url": posts[i].images.low_resolution.url,
+                'id': posts[i].id,
+                'type': posts[i].type,
+                'username': posts[i].user.username,
+                'created_time': new Date(parseInt(posts[i].created_time) * 1000),
+                'text': posts[i].caption.text ? posts[i].caption.text : '',
+                'image_count': posts[i].carousel_media ? posts[i].carousel_media.length : 1,
+                'likes': posts[i].likes.count,
+                'comments': posts[i].comments.count,
+                'tags': posts[i].tags.toString(),
+                'filter': posts[i].filter,
+                'link': posts[i].link,
             });
         }
         return formattedPosts
     }
+
+    // function getPosts(url, )
 
     myConnector.getData = function (table, doneCallback) {
         var url = config.baseUrl + '/v1/users/self/media/recent' + '?access_token=' + tableau.password
