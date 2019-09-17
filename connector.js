@@ -120,7 +120,7 @@
 
         var instagramAccountInfoCols = [
             { id: 'bio', alias: 'Bio', dataType: tableau.dataTypeEnum.string },
-            { id: 'media_count', alias: 'Media Count', dataType: tableau.dataTypeEnum.string },
+            { id: 'media_count', alias: 'Media Count', dataType: tableau.dataTypeEnum.int },
             { id: 'follow_count', alias: 'Follow Count', dataType: tableau.dataTypeEnum.int},
             { id: 'follower_count', alias: 'Follower Count', dataType: tableau.dataTypeEnum.int }
         ];
