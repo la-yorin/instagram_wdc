@@ -8,15 +8,10 @@
     };
 
 
-  $(document).ready(function() {
-
-        if((window.location.href).indexOf('#') != -1) {
-            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            var value = (queryString.split('='))[1];
-            var accessToken = decodeURIComponent(value);
-        }
-        var hasAuth = accessToken && accessToken.length > 0;
-        updateUIWithAuthState(hasAuth);
+    $(document).ready(function() {
+        // accessToken = getAccessTokenFromUrl()
+        // var hasAuth = accessToken && accessToken.length > 0;
+        // updateUIWithAuthState(hasAuth);
 
         $('#login').click(function () {
             instagramLoginRedirect()
@@ -26,67 +21,58 @@
             tableau.connectionName = 'Instagram Feed';
             tableau.submit();    
         });
-
-        $('#change-token').click(function () {
-            tableau.password = 'sadas';
-            tableau.submit();    
-        });
     });
 
 
     function instagramLoginRedirect() {
-        var appId = config.clientId;
-        if (tableau.authPurpose === tableau.authPurposeEnum.ephemerel) {
-            appId = config.clientId;
-        } else if (tableau.authPurpose === tableau.authPurposeEnum.enduring) {
-            appId = config.clientId; // This should be the Tableau Server appID
-        }
-
         var url = config.baseUrl + '/oauth/authorize/?client_id=' + config.clientId +
             '&redirect_uri=' + config.redirectUri +'&response_type=token&scope=basic';
         window.location.href = url;
     }
 
     function updateUIWithAuthState(hasAuth) {
-      if (hasAuth) {
+        if (hasAuth) {
           $('#login').css('display', 'none');
           $('#get-data').css('display', 'block');
-      } else {
+        } else {
           $('#login').css('display', 'block');
           $('#get-data').css('display', 'none');
-      }
-  }
-
-    var myConnector = tableau.makeConnector();
-
-    myConnector.init = function(initCallback) {
-        tableau.authType = tableau.authTypeEnum.custom;
-
-
-        if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
-            // Check if token is still valid
-            getAccountInfo(function(error, data) {
-                if (error) {
-                    console.log(error)
-                    // if status_code ==
-                    // tableau.abortForAuth();
-                }
-            });
         }
+    }
 
+    function getAccessTokenFromUrl() {
         var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
             var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
             var value = (queryString.split('='))[1];
             accessToken = decodeURIComponent(value);
         }
+        return accessToken
+    }
 
-        var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
-        updateUIWithAuthState(hasAuth);
+    var myConnector = tableau.makeConnector();
+
+    myConnector.init = function(initCallback) {
+        tableau.authType = tableau.authTypeEnum.custom;
+
+        if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
+
+            // Check if token is still valid, if not, abort for auth.
+            getAccountInfo(function(error, data) {
+                if (error) {
+                    tableau.abortForAuth();
+                }
+            });
+        }
 
         initCallback();
 
         if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
+
+            var accessToken = getAccessTokenFromUrl()
+            var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
+            updateUIWithAuthState(hasAuth);
+
           if (hasAuth) {
               tableau.password = accessToken;
 
@@ -215,7 +201,6 @@
                 if (error) {
                     throw error;
                 }
-                console.log(posts);
                 var formattedPosts = formatPosts(posts);
                 table.appendRows(formattedPosts);
                 doneCallback();
