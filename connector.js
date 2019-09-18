@@ -67,7 +67,8 @@
             // Check if token is still valid
             getAccountInfo(function(error, data) {
                 if (error) {
-                    print(error)
+                    console.log(error)
+                    // if status_code ==
                     // tableau.abortForAuth();
                 }
             });
