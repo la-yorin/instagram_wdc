@@ -6,12 +6,10 @@
       baseUrl: 'https://api.instagram.com'
     };
 
-
     $(document).ready(function() {
     
         $('#login').click(function () {
             config.clientId = $('#client-id-input').val()
-            console.log(config.clientId)
             instagramLoginRedirect()
         });
 
@@ -20,7 +18,6 @@
             tableau.submit();    
         });
     });
-
 
     function instagramLoginRedirect() {
         var url = config.baseUrl + '/oauth/authorize/?client_id=' + config.clientId +
@@ -41,8 +38,8 @@
     function getAccessTokenFromUrl() {
         var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
-            var queryString = (window.location.href).substr((window.location.href).indexOf('?') + 1); 
-            var value = (queryString.split('='))[1];
+            var queryString = (window.location.href).substr((window.location.href).indexOf('#') + 1); 
+            var value = (queryString.split('access_token='))[1];
             accessToken = decodeURIComponent(value);
         }
         return accessToken
