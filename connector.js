@@ -10,11 +10,12 @@
     $(document).ready(function() {
     
         $('#login').click(function () {
+            config.clientId = $('#client-id-input').val()
+            console.log(config.clientId)
             instagramLoginRedirect()
         });
 
         $('#get-data').click(function () {
-            config.client_id = $('#client-id-input').val()
             tableau.connectionName = 'Instagram Feed';
             tableau.submit();    
         });
@@ -29,10 +30,10 @@
 
     function updateUIWithAuthState(hasAuth) {
         if (hasAuth) {
-          $('#login').css('display', 'none');
+          $('#login-form').css('display', 'none');
           $('#get-data').css('display', 'block');
         } else {
-          $('#login').css('display', 'block');
+          $('#login-form').css('display', 'block');
           $('#get-data').css('display', 'none');
         }
     }
