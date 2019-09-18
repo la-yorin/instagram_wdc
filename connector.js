@@ -19,12 +19,16 @@
         updateUIWithAuthState(hasAuth);
 
         $('#login').click(function () {
-            console.log('KLIKKERDEKLIK')
             instagramLoginRedirect()
         });
 
         $('#get-data').click(function () {
             tableau.connectionName = 'Instagram Feed';
+            tableau.submit();    
+        });
+
+        $('#change-token').click(function () {
+            tableau.password = 'sadas';
             tableau.submit();    
         });
     });
@@ -64,11 +68,14 @@
         // the validity of an access token, that could be used here.
         // Then the WDC can call tableau.abortForAuth if that access token
         // is invalid.
-        //  tableau.abortForAuth
-        // call secured endpoint and check response.
 
-        // .....?
-       }
+            getAccountInfo(function(error, data) {
+                if (error) {
+                    tableau.abortForAuth();
+                    updateUIWithAuthState(False);
+                }
+            });
+        }
 
         var accessToken = ''
         if((window.location.href).indexOf('#') != -1) {
@@ -80,7 +87,6 @@
         var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
         updateUIWithAuthState(hasAuth);
 
-
         initCallback();
 
         if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
@@ -88,6 +94,7 @@
               tableau.password = accessToken;
 
               if (tableau.phase == tableau.phaseEnum.authPhase) {
+
                 // Auto-submit here if we are in the auth phase
                 tableau.submit()
               }
@@ -205,7 +212,6 @@
     }
 
     myConnector.getData = function (table, doneCallback) {
-         // tableau.abortForAuth
         if (table.tableInfo.id === 'instagramPosts') {
             var url = config.baseUrl + '/v1/users/self/media/recent' + '?access_token=' + tableau.password;
             getPosts(url, function(error, posts) {
