@@ -2,22 +2,19 @@
     'use strict';
 
     var config = {
-      clientId: '7cba9e9293584569bbce7a4fe57345df',
       redirectUri: 'https://la-yorin.github.io/instagram_wdc/',
       baseUrl: 'https://api.instagram.com'
     };
 
 
     $(document).ready(function() {
-        // accessToken = getAccessTokenFromUrl()
-        // var hasAuth = accessToken && accessToken.length > 0;
-        // updateUIWithAuthState(hasAuth);
-
+    
         $('#login').click(function () {
             instagramLoginRedirect()
         });
 
         $('#get-data').click(function () {
+            config.client_id = $('#client-id-input').val()
             tableau.connectionName = 'Instagram Feed';
             tableau.submit();    
         });
