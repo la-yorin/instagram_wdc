@@ -31,7 +31,7 @@
     function updateUIWithAuthState(hasAuth) {
         if (hasAuth) {
           $('#login-form').css('display', 'none');
-          $('#get-data').css('display', 'block');
+          $('#get-data').css('display', 'inline-block');
         } else {
           $('#login-form').css('display', 'block');
           $('#get-data').css('display', 'none');
