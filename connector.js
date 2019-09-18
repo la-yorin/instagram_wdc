@@ -72,7 +72,7 @@
             getAccountInfo(function(error, data) {
                 if (error) {
                     tableau.abortForAuth();
-                    updateUIWithAuthState(False);
+                    updateUIWithAuthState(false);
                 }
             });
         }
