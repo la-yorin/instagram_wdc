@@ -64,15 +64,11 @@
 
 
         if (tableau.phase == tableau.phaseEnum.gatherDataPhase) {
-        // If the API that WDC is using has an endpoint that checks
-        // the validity of an access token, that could be used here.
-        // Then the WDC can call tableau.abortForAuth if that access token
-        // is invalid.
-
+            // Check if token is still valid
             getAccountInfo(function(error, data) {
                 if (error) {
-                    tableau.abortForAuth();
-                    updateUIWithAuthState(false);
+                    print(error)
+                    // tableau.abortForAuth();
                 }
             });
         }
